@@ -1,0 +1,8 @@
+module.exports = {
+  parser: require('gengojs-default-parser'),
+  router: require('gengojs-default-router'),
+  backend: require('gengojs-default-memory'),
+  api: require('gengojs-default-api'),
+  header: require('gengojs-default-header'),
+  localize: require('gengojs-default-localize')
+};
