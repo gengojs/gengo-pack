@@ -6,7 +6,7 @@ var pack = require('../');
 var wrapper = require('gengojs-wrappify/es6');
 var request = require('supertest');
 var _ = require('lodash');
-// var path = require('path');
+var path = require('path');
 // Servers
 var koa = require('koa');
 var hapi = require('hapi');
@@ -19,21 +19,21 @@ var app = {
 };
 // Wrap the core
 var wrap = wrapper(core({}, pack));
-// var routed = wrapper(core({
-//   backend: {
-//     directory: path.normalize(__dirname +
-//       '/fixtures/locales/routed')
-//   }
-// }, pack));
-// var unrouted = wrapper(core({
-//   backend: {
-//     directory: path.normalize(__dirname +
-//       '/fixtures/locales/unrouted')
-//   }
-// }, pack));
+var routed = wrapper(core({
+  backend: {
+    directory: path.normalize(__dirname +
+      '/fixtures/locales/routed/dest/')
+  }
+}, pack));
+var unrouted = wrapper(core({
+  backend: {
+    directory: path.normalize(__dirname +
+      '/fixtures/locales/unrouted/dest/')
+  }
+}, pack));
 
-// koa router
-// var router = require('koa-router')();
+// Koa router
+var router = require('koa-router')();
 
 describe('gengo-pack', function() {
   'use strict';
@@ -41,9 +41,19 @@ describe('gengo-pack', function() {
     // API tests
     describe('api', function() {
       // Koa
-      describe.only('koa', function() {
+      describe('koa', function() {
         app.koa.use(wrap.koa());
-
+        app.koa.use(function*(next) {
+          this.body = {
+            __: !_.isUndefined(this.__) &&
+              !_.isUndefined(this.request.__) &&
+              !_.isUndefined(this.req.__),
+            __l: !_.isUndefined(this.__l) &&
+              !_.isUndefined(this.request.__l) &&
+              !_.isUndefined(this.req.__l)
+          };
+          yield next;
+        });
         describe('\'__\' , \'__l\'', function() {
           it('should exist', function(done) {
             request(app.koa.listen()).get('/').expect({
@@ -89,24 +99,26 @@ describe('gengo-pack', function() {
         });
       });
     });
-    // Parser tests
+    //Parser tests
     describe('parser', function() {
       // Koa
       describe('koa', function() {
         describe('notations', function() {
           describe('phrase', function() {
             describe('basic phrase', function() {
+
+              var k = new koa();
               // Set wrapper
-              app.koa.use(wrap.koa());
-              app.koa.use(function*(next) {
-                var __ = this.request.__;
+              k.use(unrouted.koa());
+              k.use(function*(next) {
+                var __ = this.__;
                 this.body = {
                   result: __('Hello')
                 };
                 yield next;
               });
               it('should output "Hello"', function(done) {
-                request(app.express).get('/').expect({
+                request(k.listen()).get('/').expect({
                   result: 'Hello'
                 }, done);
               });
@@ -123,22 +135,22 @@ describe('gengo-pack', function() {
 
           });
         });
-        // describe('router', function() {
-        //   var route = function*(next) {
-        //     yield next;
-        //   };
-        //   router.get('/', route);
-        //   router.get('/about', route);
-        //   router.get('/api/v1.0', route);
-        //   describe('routed', function() {
-        //     app.koa.use(routed.koa());
-        //     app.koa.use(router.routes());
-        //
-        //   });
-        //   describe('unrouted', function() {
-        //
-        //   });
-        // });
+        describe('router', function() {
+          var route = function*(next) {
+            yield next;
+          };
+          router.get('/', route);
+          router.get('/about', route);
+          router.get('/api/v1.0', route);
+          describe('routed', function() {
+            app.koa.use(routed.koa());
+            app.koa.use(router.routes());
+
+          });
+          describe('unrouted', function() {
+
+          });
+        });
       });
       // Express
       describe('express', function() {
