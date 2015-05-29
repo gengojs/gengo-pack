@@ -20,12 +20,24 @@ var app = {
 // Wrap the core
 var wrap = wrapper(core({}, pack));
 var routed = wrapper(core({
+  router: {
+    enabled: true
+  },
+  header: {
+    supported: ['en-us', 'ja']
+  },
   backend: {
     directory: path.normalize(__dirname +
       '/fixtures/locales/routed/dest/')
   }
 }, pack));
 var unrouted = wrapper(core({
+  router: {
+    enabled: false
+  },
+  header: {
+    supported: ['en-us', 'ja']
+  },
   backend: {
     directory: path.normalize(__dirname +
       '/fixtures/locales/unrouted/dest/')
@@ -105,69 +117,230 @@ describe('gengo-pack', function() {
       describe('koa', function() {
         describe('notations', function() {
           describe('phrase', function() {
-            describe('basic phrase', function() {
+            var k = new koa();
+            // Set wrapper
+            k.use(unrouted.koa());
+            k.use(function*(next) {
+              var __ = this.__;
+              this.body = {
+                result: [
+                  // Basic phrase
+                  __('Hello'),
+                  // Basic phrase with sprintf
+                  __('Hello %s', 'John'),
+                  // Advanced phrase with sprintf
+                  __('Hello %s, my name is %s', 'Luke', 'John'),
+                  // Advanced phrase with interpolation
+                  __('Hello {{name}}, my name is ' +
+                    '{{my.firstname}} {{my.lastname}}', {
+                      name: 'John',
+                      my: {
+                        firstname: 'Luke',
+                        lastname: 'Skywalker'
+                      }
+                    })
 
-              var k = new koa();
-              // Set wrapper
-              k.use(unrouted.koa());
-              k.use(function*(next) {
-                var __ = this.__;
-                this.body = {
-                  result: __('Hello')
-                };
-                yield next;
-              });
-              it('should output "Hello"', function(done) {
-                request(k.listen()).get('/').expect({
-                  result: 'Hello'
-                }, done);
-              });
+                ]
+              };
+              yield next;
             });
-
+            it('should output correctly', function(done) {
+              request(k.listen()).get('/').expect({
+                result: [
+                  'Hello',
+                  'Hello John',
+                  'Hello Luke, my name is John',
+                  'Hello John, my name is Luke Skywalker'
+                ]
+              }, done);
+            });
           });
           describe('bracket', function() {
-
+            var k = new koa();
+            // Set wrapper
+            k.use(unrouted.koa());
+            k.use(function*(next) {
+              var __ = this.__;
+              this.body = {
+                result: [
+                  // Basic bracket
+                  __('[Hello]'),
+                  // Basic bracket with dots
+                  __('[greeting.informal.basic]'),
+                  // Advanced bracket with dot key
+                  __('[greeting.informal.advanced].hey')
+                ]
+              };
+              yield next;
+            });
+            it('should output correctly', function(done) {
+              request(k.listen()).get('/').expect({
+                result: [
+                  'Hello',
+                  'Hey',
+                  'Hey',
+                ]
+              }, done);
+            });
           });
           describe('dot', function() {
-
+            var k = new koa();
+            // Set wrapper
+            k.use(unrouted.koa());
+            k.use(function*(next) {
+              var __ = this.__;
+              this.body = {
+                result: [
+                  // Dot notation
+                  __('greeting.informal')
+                ]
+              };
+              yield next;
+            });
+            it('should output correctly', function(done) {
+              request(k.listen()).get('/').expect({
+                result: [
+                  'Hey',
+                ]
+              }, done);
+            });
           });
           describe('message format', function() {
-
+            var k = new koa();
+            // Set wrapper
+            k.use(unrouted.koa());
+            k.use(function*(next) {
+              var __ = this.__;
+              this.body = {
+                result: [
+                  // Dot notation
+                  __('msgformat.photos', {
+                    parser: 'format'
+                  }, {
+                    numPhotos: 1000
+                  })
+                ]
+              };
+              yield next;
+            });
+            it('should output correctly', function(done) {
+              request(k.listen()).get('/').expect({
+                result: [
+                  'You have 1,000 photos.'
+                ]
+              }, done);
+            });
           });
         });
         describe('router', function() {
           var route = function*(next) {
+            var __ = this.__;
+            this.body = {
+              result: [
+                // Route
+                __('Hello'),
+                // Global
+                __('Hello world!')
+              ]
+            };
             yield next;
           };
           router.get('/', route);
           router.get('/about', route);
           router.get('/api/v1.0', route);
           describe('routed', function() {
-            app.koa.use(routed.koa());
-            app.koa.use(router.routes());
+            var k = koa();
+            k.use(routed.koa());
+            k.use(router.routes());
+            describe('request \'/\'', function() {
+              it('should output correctly', function(done) {
+                request(k.listen()).get('/').expect({
+                  result: [
+                    'Hello',
+                    'Hello world!'
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(k.listen()).get('/')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      'こんにちは！'
+                    ]
+                  }, done);
+              });
+            });
 
+            describe('request \'/about\'', function() {
+              it('should output correctly', function(done) {
+                request(k.listen()).get('/about').expect({
+                  result: [
+                    'Hello',
+                    'Hello world!'
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(k.listen()).get('/about')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      'こんにちは！'
+                    ]
+                  }, done);
+              });
+            });
+
+            describe('request \'/api/v1.0\'', function() {
+              it('should output correctly', function(done) {
+                request(k.listen()).get('/api/v1.0').expect({
+                  result: [
+                    'Hello',
+                    'Hello world!'
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(k.listen()).get('/api/v1.0')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      'こんにちは！'
+                    ]
+                  }, done);
+              });
+            });
           });
-          describe('unrouted', function() {
 
+          describe('unrouted', function() {
+            var k = koa();
+            k.use(unrouted.koa());
+            k.use(router.routes());
+            describe('request \'/\'', function() {
+              it('should output correctly', function(done) {
+                request(k.listen()).get('/').expect({
+                  result: [
+                    'Hello',
+                    ''
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(k.listen()).get('/')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      ''
+                    ]
+                  }, done);
+              });
+            });
           });
         });
       });
       // Express
       describe('express', function() {
-        describe('notations', function() {
-          describe('phrase', function() {
-
-          });
-          describe('bracket', function() {
-
-          });
-          describe('dot', function() {
-
-          });
-          describe('message format', function() {
-
-          });
-        });
         describe('router', function() {
           describe('routed', function() {
 
@@ -179,20 +352,6 @@ describe('gengo-pack', function() {
       });
       // Hapi
       describe('hapi', function() {
-        describe('notations', function() {
-          describe('phrase', function() {
-
-          });
-          describe('bracket', function() {
-
-          });
-          describe('dot', function() {
-
-          });
-          describe('message format', function() {
-
-          });
-        });
         describe('router', function() {
           describe('routed', function() {
 

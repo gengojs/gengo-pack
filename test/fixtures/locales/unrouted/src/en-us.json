@@ -20,7 +20,7 @@
   // Basic bracket
   // Use [Hello]
 
-  // Basic bracket with dot key
+  // Basic bracket with dots
   "greeting.informal.basic": {
     "default": "Hey"
   },
