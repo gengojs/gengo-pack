@@ -19,6 +19,8 @@ var app = {
 };
 // Wrap the core
 var wrap = wrapper(core({}, pack));
+
+// Set the routed version of gengo
 var routed = wrapper(core({
   router: {
     enabled: true
@@ -31,6 +33,8 @@ var routed = wrapper(core({
       '/fixtures/locales/routed/dest/')
   }
 }, pack));
+
+// Set the unrouted version of gengo
 var unrouted = wrapper(core({
   router: {
     enabled: false
@@ -316,7 +320,7 @@ describe('gengo-pack', function() {
           describe('unrouted', function() {
             var k = koa();
             k.use(unrouted.koa());
-            k.use(router.routes());
+            k.use(route);
             describe('request \'/\'', function() {
               it('should output correctly', function(done) {
                 request(k.listen()).get('/').expect({
@@ -342,11 +346,109 @@ describe('gengo-pack', function() {
       // Express
       describe('express', function() {
         describe('router', function() {
+          var route = function(req, res) {
+            var __ = req.__;
+            var body = {
+              result: [
+                // Route
+                __('Hello'),
+                // Global
+                __('Hello world!')
+              ]
+            };
+            res.send(body);
+          };
+
           describe('routed', function() {
+            var e = express();
+            e.use(routed.express());
+            e.get('/', route);
+            e.get('/about', route);
+            e.get('/api/v1.0', route);
+            describe('request \'/\'', function() {
+              it('should output correctly', function(done) {
+                request(e).get('/').expect({
+                  result: [
+                    'Hello',
+                    'Hello world!'
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(e).get('/')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      'こんにちは！'
+                    ]
+                  }, done);
+              });
+            });
 
+            describe('request \'/about\'', function() {
+              it('should output correctly', function(done) {
+                request(e).get('/about').expect({
+                  result: [
+                    'Hello',
+                    'Hello world!'
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(e).get('/about')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      'こんにちは！'
+                    ]
+                  }, done);
+              });
+            });
+
+            describe('request \'/api/v1.0\'', function() {
+              it('should output correctly', function(done) {
+                request(e).get('/api/v1.0').expect({
+                  result: [
+                    'Hello',
+                    'Hello world!'
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(e).get('/api/v1.0')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      'こんにちは！'
+                    ]
+                  }, done);
+              });
+            });
           });
-          describe('unrouted', function() {
 
+          describe('unrouted', function() {
+            var e = express();
+            e.use(unrouted.express());
+            e.use('/', route);
+            describe('request \'/\'', function() {
+              it('should output correctly', function(done) {
+                request(e).get('/').expect({
+                  result: [
+                    'Hello',
+                    ''
+                  ]
+                }, done);
+              });
+              it('should output correctly in Japanese', function(done) {
+                request(e).get('/')
+                  .set('Accept-Language', 'ja').expect({
+                    result: [
+                      'こんにちは',
+                      ''
+                    ]
+                  }, done);
+              });
+            });
           });
         });
       });
