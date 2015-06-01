@@ -454,12 +454,90 @@ describe('gengo-pack', function() {
       });
       // Hapi
       describe('hapi', function() {
+
+        // Set up Hapi
+        var hapiRouted = new hapi.Server();
+        hapiRouted.connection({
+          port: 3001
+        });
+        var hapiUnrouted = new hapi.Server();
+        hapiUnrouted.connection({
+          port: 3002
+        });
+
         describe('router', function() {
+          var handler = function(request, reply) {
+            var __ = request.__;
+            reply({
+              result: [
+                // Route
+                __('Hello'),
+                // Global
+                __('Hello world!')
+              ]
+            });
+          };
+          var route = {
+            method: 'GET',
+            path: '/',
+            handler: handler
+          };
+
+          var routes = [
+            route, {
+              method: 'GET',
+              path: '/about',
+              handler: handler
+            }, {
+              method: 'GET',
+              path: '/api/v1.0',
+              handler: handler
+            }
+          ];
+
           describe('routed', function() {
-
+            hapiRouted.register(routed.hapi(), function() {});
+            hapiRouted.route(routes);
+            hapiRouted.start(function() {});
           });
-          describe('unrouted', function() {
 
+          describe('unrouted', function() {
+            hapiUnrouted.register(unrouted.hapi(), function() {});
+            hapiUnrouted.route(route);
+            hapiUnrouted.start(function() {});
+            describe('request \'/\'', function() {
+              it('should output correctly', function(done) {
+                hapiUnrouted.inject('/', function(res) {
+                  assert.deepEqual(JSON.parse(res.payload), {
+                    result: [
+                      'Hello',
+                      ''
+                    ]
+                  });
+
+                  done();
+                });
+              });
+              it('should output correctly in Japanese', function(done) {
+                hapiUnrouted.inject({
+                  method: 'GET',
+                  url: '/',
+                  headers: {
+                    'Accept-Language': 'ja',
+                  }
+                }, function(res) {
+                  console.log(res.payload);
+                  assert.deepEqual(JSON.parse(res.payload), {
+                    result: [
+                      'こんにちは',
+                      ''
+                    ]
+                  });
+
+                  done();
+                });
+              });
+            });
           });
         });
       });
