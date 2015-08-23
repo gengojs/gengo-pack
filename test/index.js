@@ -526,7 +526,6 @@ describe('gengo-pack', function() {
                     'Accept-Language': 'ja',
                   }
                 }, function(res) {
-                  console.log(res.payload);
                   assert.deepEqual(JSON.parse(res.payload), {
                     result: [
                       'こんにちは',
