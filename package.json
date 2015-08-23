@@ -18,11 +18,11 @@
   "homepage": "https://github.com/iwatakeshi/gengojs-default-pack",
   "dependencies": {
     "gengojs-default-api": "0.0.2",
-    "gengojs-default-header": "0.0.1",
+    "gengojs-default-header": "0.0.2",
     "gengojs-default-localize": "0.0.1",
-    "gengojs-default-memory": "0.0.2",
-    "gengojs-default-parser": "0.0.3",
-    "gengojs-default-router": "0.0.1-beta.8",
+    "gengojs-default-memory": "0.0.3",
+    "gengojs-default-parser": "0.0.4",
+    "gengojs-default-router": "0.0.2",
     "supertest": "^1.0.1"
   },
   "devDependencies": {
