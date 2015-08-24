@@ -13,6 +13,27 @@ This is the default gengo-pack that contains the following plugins:
 * [gengojs-default-parser](https://github.com/iwatakeshi/gengojs-default-parser)
 * [gengojs-default-router](https://github.com/iwatakeshi/gengojs-default-router)
 
-### Notes
+## Usage
 
-* io.js is not supported due to an issue seen at [this GitHub page](https://github.com/npm/npm/issues/8406).
+```javascript
+
+	var gengo = require('gengojs');
+	var pack = require('gengojs-default-pack');
+	
+	// In Express (also applies for Koa)	
+	var express = require('express');
+	var app = express();
+	app.use(gengo({/*options*/, pack())};
+	
+	// ...
+	
+	
+	// In Hapi
+	var Hapi = require('hapi');
+	var server = Hapi();
+	server.connection({ port: 3000});
+	server.register(gengo({/*options*/, pack()), function(error){});
+		
+	// ...
+	
+```
