@@ -2,7 +2,7 @@
 // Dependencies
 var assert = require('chai').assert;
 var core = require('gengojs-core');
-var pack = require('../');
+var pack = require('../')();
 var wrapper = require('gengojs-wrappify/es6');
 var request = require('supertest');
 var _ = require('lodash');

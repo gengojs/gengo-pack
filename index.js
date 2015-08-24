@@ -1,4 +1,5 @@
-module.exports = function(){
+module.exports = function() {
+  'use strict';
   return {
     parser: require('gengojs-default-parser'),
     router: require('gengojs-default-router'),
@@ -7,4 +8,4 @@ module.exports = function(){
     header: require('gengojs-default-header'),
     localize: require('gengojs-default-localize')
   };
-}
+};
