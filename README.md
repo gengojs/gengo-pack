@@ -1,17 +1,17 @@
 # gengo-pack
 The default gengo-pack for gengojs
 
-[![Build Status](https://travis-ci.org/gengojs/gengo-pack.svg?branch=master)](https://travis-ci.org/gengojs/gengo-pack-default-pack)
+[![Build Status](https://travis-ci.org/gengojs/gengo-pack.svg?branch=master)](https://travis-ci.org/gengojs/gengo-pack)
 
 This is the default gengo-pack that contains the following plugins:
 
 
-* [gengojs-default-api](https://github.com/gengojs/gengo-pack-default-api)
-* [gengojs-default-backend](https://github.com/gengojs/gengo-pack-default-backend)
-* [gengojs-default-header](https://github.com/gengojs/gengo-pack-default-header)
-* [gengojs-default-localize](https://github.com/gengojs/gengo-pack-default-localize)
-* [gengojs-default-parser](https://github.com/gengojs/gengo-pack-default-parser)
-* [gengojs-default-router](https://github.com/gengojs/gengo-pack-default-router)
+* [gengojs-default-api](https://github.com/gengojs/gengo-default-api)
+* [gengojs-default-backend](https://github.com/gengojs/gengo-default-backend)
+* [gengojs-default-header](https://github.com/gengojs/gengo-default-header)
+* [gengojs-default-localize](https://github.com/gengojs/gengo-default-localize)
+* [gengojs-default-parser](https://github.com/gengojs/gengo-default-parser)
+* [gengojs-default-router](https://github.com/gengojs/gengo-default-router)
 
 ## Usage
 
