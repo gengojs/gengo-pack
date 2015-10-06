@@ -2,7 +2,7 @@
 // Dependencies
 var assert = require('chai').assert;
 var core = require('gengojs-core');
-var pack = require('../')();
+var pack = require('../src/');
 var wrapper = require('gengojs-wrappify/es6');
 var request = require('supertest');
 var _ = require('lodash');
@@ -18,7 +18,7 @@ var app = {
   express: express()
 };
 // Wrap the core
-var wrap = wrapper(core({}, pack));
+var wrap = wrapper(core({}, pack()));
 
 // Set the routed version of gengo
 var routed = wrapper(core({
@@ -32,7 +32,7 @@ var routed = wrapper(core({
     directory: path.normalize(__dirname +
       '/fixtures/locales/routed/dest/')
   }
-}, pack));
+}, pack()));
 
 // Set the unrouted version of gengo
 var unrouted = wrapper(core({
@@ -46,7 +46,7 @@ var unrouted = wrapper(core({
     directory: path.normalize(__dirname +
       '/fixtures/locales/unrouted/dest/')
   }
-}, pack));
+}, pack()));
 
 // Koa router
 var router = require('koa-router')();
