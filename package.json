@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/iwatakeshi/gengojs-default-pack.git"
+    "url": "https://github.com/gengojs/gengo-pack.git"
   },
   "author": "iwatakeshi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/iwatakeshi/gengojs-default-pack/issues"
+    "url": "https://github.com/gengojs/gengo-pack/issues"
   },
-  "homepage": "https://github.com/iwatakeshi/gengojs-default-pack",
+  "homepage": "https://github.com/gengojs/gengo-pack",
   "dependencies": {
     "gengojs-default-api": "0.0.7",
     "gengojs-default-header": "0.1.4",
