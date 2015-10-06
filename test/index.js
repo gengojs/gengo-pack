@@ -7,13 +7,10 @@ var wrapper = require('gengojs-wrappify/');
 var request = require('supertest');
 var _ = require('lodash');
 var path = require('path');
-// Servers
-var koa = require('koa');
 var hapi = require('hapi');
 var express = require('express');
 // App
 var app = {
-  koa: koa(),
   hapi: new hapi.Server(),
   express: express()
 };
@@ -47,9 +44,6 @@ var unrouted = wrapper(core({
       '/fixtures/locales/unrouted/dest/')
   }
 }, pack()));
-
-// Koa router
-var router = require('koa-router')();
 
 describe('gengo-pack', function() {
   'use strict';
