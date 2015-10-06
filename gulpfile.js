@@ -72,10 +72,10 @@ gulp.task('watch', function () {
 
 gulp.task('test', ['lib'], function (cb) {
   if (isHarmony)
-    return gulp.src('./test/*.js')
+    return gulp.src('./test/harmony/*.js')
     .pipe(shell(['mocha --harmony <%= file.path %>']));
   else return gulp.src([
-    './tests/index.js',
+    './test/index.js',
   ]).pipe(mocha());
 });
 
