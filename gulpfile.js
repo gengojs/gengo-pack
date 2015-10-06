@@ -1,16 +1,19 @@
 /* Dev-Dependencies */
 var 
-  gulp 				= require('gulp'),
-  sourcemaps 	= require('gulp-sourcemaps'),
-  babel 			= require('gulp-babel'),
-  mocha 			= require('gulp-mocha'),
-  jshint 			= require('gulp-jshint'),
-  beautify 		= require('gulp-jsbeautify'),
-  shell 			= require('gulp-shell'),
-  ghPages 		= require('gulp-gh-pages'),
-  rimraf 			= require('rimraf'),
-  config 			= require('./config'),
-  changelog 	= require('gulp-changelog');
+  gulp        = require('gulp'),
+  sourcemaps  = require('gulp-sourcemaps'),
+  babel       = require('gulp-babel'),
+  mocha       = require('gulp-spawn-mocha'),
+  jshint      = require('gulp-jshint'),
+  beautify    = require('gulp-jsbeautify'),
+  shell       = require('gulp-shell'),
+  ghPages     = require('gulp-gh-pages'),
+  rimraf      = require('rimraf'),
+  config      = require('./config'),
+  semver      = require('semver'),
+  version     = require('node-version').long,
+  isHarmony   = !semver.lt(version.toString(), '0.11.0'),
+  changelog   = require('gulp-changelog');
 
 /** Backs up the files in case of emergency! */
 gulp.task('backup', function () {
@@ -35,7 +38,7 @@ gulp.task('beautify', ['backup'], function () {
 /*
  * Clean the docs themes folder
  */
-gulp.task('clean:docs', ['gh-pages'], function (cb) {
+gulp.task('clean-docs', ['gh-pages'], function (cb) {
   rimraf('./docs/', cb);
 });
 
@@ -67,10 +70,13 @@ gulp.task('watch', function () {
 
 /* Runs tests */
 
-gulp.task('test', ['lib'], function() {
-  return gulp.src('./test/index.js', {read: false})
-        // gulp-mocha needs filepaths so you can't have any plugins before it
-        .pipe(mocha());
+gulp.task('test', ['lib'], function (cb) {
+  if (isHarmony)
+    return gulp.src('./test/*.js')
+    .pipe(shell(['mocha --harmony <%= file.path %>']));
+  else return gulp.src([
+    './tests/index.js',
+  ]).pipe(mocha());
 });
 
 gulp.task('changelog', function (cb) {
@@ -89,22 +95,15 @@ gulp.task('doc', ['build'], shell.task([
         cmd = {
           source: ' -s lib/',
           output: ' -o docs/',
-          name:' -n "gengo.js/core"',
+          name:' -n "gengo.js/gengo-pack"',
           theme:' -t cayman'
         };
     return doc + cmd.source + cmd.output + cmd.name + cmd.theme;
   })()
 ]));
 
-/*
- * Clean the backup folder
- */
-gulp.task('clean:backup', function (cb) {
-  rimraf('.backup/', cb);
-});
-
 gulp.task('default', ['backup', 'beautify', 'lib', 'watch']);
 
 gulp.task('build', ['backup', 'beautify', 'lib', 'test']);
 
-gulp.task('docs', ['build', 'doc', 'gh-pages', 'clean:docs', 'clean:backup']);
+gulp.task('docs', ['build', 'doc', 'gh-pages', 'clean-docs']);
