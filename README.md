@@ -1,17 +1,17 @@
-# gengojs-default-pack
+# gengo-pack
 The default gengo-pack for gengojs
 
-[![Build Status](https://travis-ci.org/iwatakeshi/gengojs-default-pack.svg?branch=master)](https://travis-ci.org/iwatakeshi/gengojs-default-pack)
+[![Build Status](https://travis-ci.org/gengojs/gengo-pack.svg?branch=master)](https://travis-ci.org/gengojs/gengo-pack-default-pack)
 
 This is the default gengo-pack that contains the following plugins:
 
 
-* [gengojs-default-api](https://github.com/iwatakeshi/gengojs-default-api)
-* [gengojs-default-backend](https://github.com/iwatakeshi/gengojs-default-backend)
-* [gengojs-default-header](https://github.com/iwatakeshi/gengojs-default-header)
-* [gengojs-default-localize](https://github.com/iwatakeshi/gengojs-default-localize)
-* [gengojs-default-parser](https://github.com/iwatakeshi/gengojs-default-parser)
-* [gengojs-default-router](https://github.com/iwatakeshi/gengojs-default-router)
+* [gengojs-default-api](https://github.com/gengojs/gengo-pack-default-api)
+* [gengojs-default-backend](https://github.com/gengojs/gengo-pack-default-backend)
+* [gengojs-default-header](https://github.com/gengojs/gengo-pack-default-header)
+* [gengojs-default-localize](https://github.com/gengojs/gengo-pack-default-localize)
+* [gengojs-default-parser](https://github.com/gengojs/gengo-pack-default-parser)
+* [gengojs-default-router](https://github.com/gengojs/gengo-pack-default-router)
 
 ## Usage
 

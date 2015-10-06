@@ -4,7 +4,7 @@
   "description": "The default gengo-pack for gengojs",
   "main": "index.js",
   "scripts": {
-    "test": "grunt && mocha --harmony test/*.js"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
