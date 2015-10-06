@@ -56,29 +56,6 @@ describe('gengo-pack', function() {
   describe('plugins', function() {
     // API tests
     describe('api', function() {
-      // Koa
-      describe('koa', function() {
-        app.koa.use(wrap.koa());
-        app.koa.use(function*(next) {
-          this.body = {
-            __: !_.isUndefined(this.__) &&
-              !_.isUndefined(this.request.__) &&
-              !_.isUndefined(this.req.__),
-            __l: !_.isUndefined(this.__l) &&
-              !_.isUndefined(this.request.__l) &&
-              !_.isUndefined(this.req.__l)
-          };
-          yield next;
-        });
-        describe('\'__\' , \'__l\'', function() {
-          it('should exist', function(done) {
-            request(app.koa.listen()).get('/').expect({
-              __: true,
-              __l: true
-            }, done);
-          });
-        });
-      });
       // Express
       describe('express', function() {
         app.express.use(wrap.express());
