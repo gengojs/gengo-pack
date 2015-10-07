@@ -17,17 +17,17 @@
   },
   "homepage": "https://github.com/gengojs/gengo-pack",
   "dependencies": {
-    "gengojs-default-api": "0.0.7",
-    "gengojs-default-header": "0.1.4",
-    "gengojs-default-localize": "0.0.2",
-    "gengojs-default-memory": "0.1.1",
+    "gengojs-default-api": "0.0.8",
+    "gengojs-default-header": "0.1.5",
+    "gengojs-default-localize": "0.0.3",
+    "gengojs-default-memory": "0.1.2",
+    "gengojs-default-parser": "^1.0.2",
     "gengojs-default-router": "0.0.5"
   },
   "devDependencies": {
     "chai": "^3.2.0",
     "express": "^4.12.4",
     "gengojs-core": "^0.3.14",
-    "gengojs-default-parser": "git+https://github.com/gengojs/plugin-parser.git",
     "gengojs-wrappify": "^0.1.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
